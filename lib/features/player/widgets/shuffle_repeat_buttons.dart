@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart' hide RepeatMode;
+import 'package:flutter/material.dart';
 
-import '../player_provider.dart' show RepeatMode;
+import '../player_provider.dart' show PlayerRepeatMode;
 import '../player_theme.dart';
 
 class ShuffleRepeatButtons extends StatelessWidget {
   final bool shuffleOn;
-  final RepeatMode repeatMode;
+  final PlayerRepeatMode repeatMode;
   final VoidCallback onShuffle;
   final VoidCallback onRepeat;
   final Widget centerControls;
@@ -32,14 +32,14 @@ class ShuffleRepeatButtons extends StatelessWidget {
         ),
         centerControls,
         _ToggleIconButton(
-          icon: repeatMode == RepeatMode.one
+          icon: repeatMode == PlayerRepeatMode.one
               ? Icons.repeat_one_rounded
               : Icons.repeat_rounded,
-          active: repeatMode != RepeatMode.off,
+          active: repeatMode != PlayerRepeatMode.off,
           tooltip: switch (repeatMode) {
-            RepeatMode.off => 'Ulangi semua',
-            RepeatMode.all => 'Ulangi satu lagu',
-            RepeatMode.one => 'Matikan ulang',
+            PlayerRepeatMode.off => 'Ulangi semua',
+            PlayerRepeatMode.all => 'Ulangi satu lagu',
+            PlayerRepeatMode.one => 'Matikan ulang',
           },
           onPressed: onRepeat,
         ),

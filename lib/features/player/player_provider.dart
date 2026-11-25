@@ -9,7 +9,7 @@ import 'dev/models.dart';
 import 'services/audio_player_service.dart';
 import 'services/deezer_track_service.dart';
 
-enum RepeatMode { off, all, one }
+enum PlayerRepeatMode { off, all, one }
 
 class PlayerProvider extends ChangeNotifier {
   PlayerProvider._internal() {
@@ -48,7 +48,7 @@ class PlayerProvider extends ChangeNotifier {
   bool _playing = false;
   bool _completionHandled = false;
   bool _shuffleOn = false;
-  RepeatMode _repeatMode = RepeatMode.off;
+  PlayerRepeatMode _repeatMode = PlayerRepeatMode.off;
   ProcessingState _processing = ProcessingState.idle;
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
@@ -72,7 +72,7 @@ class PlayerProvider extends ChangeNotifier {
 
   bool get shuffleOn => _shuffleOn;
 
-  RepeatMode get repeatMode => _repeatMode;
+  PlayerRepeatMode get repeatMode => _repeatMode;
 
   String? get error => _error;
 
@@ -80,7 +80,7 @@ class PlayerProvider extends ChangeNotifier {
 
   bool get hasNext {
     if (_queue.isEmpty) return false;
-    if (_repeatMode == RepeatMode.all) return true;
+    if (_repeatMode == PlayerRepeatMode.all) return true;
     return _shuffleOn ? _remaining().isNotEmpty : _index < _queue.length - 1;
   }
 
@@ -150,7 +150,7 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   void cycleRepeat() {
-    _repeatMode = RepeatMode.values[(_repeatMode.index + 1) % 3];
+    _repeatMode = PlayerRepeatMode.values[(_repeatMode.index + 1) % 3];
     notifyListeners();
   }
 
@@ -204,7 +204,7 @@ class PlayerProvider extends ChangeNotifier {
   }
 
   Future<void> _onCompleted() async {
-    if (_repeatMode == RepeatMode.one) {
+    if (_repeatMode == PlayerRepeatMode.one) {
       await seek(Duration.zero);
       unawaited(_audio.play());
       return;
