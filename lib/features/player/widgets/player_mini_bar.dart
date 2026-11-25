@@ -24,7 +24,9 @@ class _PlayerMiniBarState extends State<PlayerMiniBar> {
   @override
   void didUpdateWidget(PlayerMiniBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _widgetVersion.value++;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _widgetVersion.value++;
+    });
   }
 
   @override

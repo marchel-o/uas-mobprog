@@ -105,7 +105,9 @@ class MiniPlayer extends StatelessWidget {
                   ),
                 ),
                 LinearProgressIndicator(
-                  value: progress.clamp(0.0, 1.0),
+                  value: progress.isFinite
+                      ? progress.clamp(0.0, 1.0).toDouble()
+                      : 0.0,
                   minHeight: 2,
                   color: PlayerTheme.white,
                   backgroundColor: PlayerTheme.inactiveTrack,

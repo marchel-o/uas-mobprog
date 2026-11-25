@@ -24,6 +24,7 @@ class PlayerProvider extends ChangeNotifier {
       }),
       _audio.playerStateStream.listen(_onPlayerState),
       _audio.errorStream.listen((_) {
+        if (_loading) return;
         _error = 'Pemutaran terganggu, coba lagi';
         notifyListeners();
       }),
@@ -162,6 +163,9 @@ class PlayerProvider extends ChangeNotifier {
     _index = -1;
     _history.clear();
     _played.clear();
+    _playing = false;
+    _processing = ProcessingState.idle;
+    _completionHandled = false;
     _position = Duration.zero;
     _duration = Duration.zero;
     _error = null;
@@ -219,6 +223,7 @@ class PlayerProvider extends ChangeNotifier {
 
   Future<void> _start(int index) async {
     final token = ++_token;
+    final song = _queue[index];
     _index = index;
     _error = null;
     _loading = true;
@@ -229,9 +234,8 @@ class PlayerProvider extends ChangeNotifier {
     notifyListeners();
     try {
       await _audio.stop();
-      await _prepare(_queue[index]);
+      await _prepare(song, token);
       if (token != _token) return;
-      _error = null;
       unawaited(_audio.play());
     } on PlayerInterruptedException {
       return;
@@ -249,24 +253,31 @@ class PlayerProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _prepare(Song song) async {
+  Future<void> _prepare(Song song, int token) async {
     if (song.previewUrl.isEmpty) {
-      await _audio.load(await _deezer.fetchPreviewUrl(song.id));
+      await _loadFresh(song, token);
       return;
     }
+    if (token != _token) return;
     try {
       await _audio.load(song.previewUrl);
     } on PlayerException {
-      await _audio.load(await _deezer.fetchPreviewUrl(song.id));
+      await _loadFresh(song, token);
     }
+  }
+
+  Future<void> _loadFresh(Song song, int token) async {
+    final url = await _deezer.fetchPreviewUrl(song.id);
+    if (token != _token) return;
+    await _audio.load(url);
   }
 
   @override
   void dispose() {
     for (final subscription in _subscriptions) {
-      subscription.cancel();
+      unawaited(subscription.cancel());
     }
-    _audio.dispose();
+    unawaited(_audio.dispose());
     _deezer.dispose();
     super.dispose();
   }
