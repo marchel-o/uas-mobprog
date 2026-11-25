@@ -185,4 +185,59 @@ class _SearchPageState extends State<SearchPage> {
             RecentSearchItem(
               keyword: keyword,
               onTap: () => _setQuery(keyword),
-              onDelete: () => setState(() =>
+              onDelete: () => setState(() => _recent.remove(keyword)),
+            ),
+        ],
+        const Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Text(
+            'Jelajahi semua',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Expanded(
+          child: GenreGrid(
+            genres: _genres,
+            onGenreTap: _setQuery,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildResults() {
+    final results = _results;
+    return Column(
+      children: [
+        const SizedBox(height: 4),
+        SearchFilterTabs(
+          filters: _filters,
+          initialIndex: _filterIndex,
+          onChanged: (i) => setState(() => _filterIndex = i),
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: results.isEmpty
+              ? EmptySearchState(query: _query.trim())
+              : ListView.builder(
+                  itemCount: results.length,
+                  itemBuilder: (context, index) {
+                    final item = results[index];
+                    return SearchResultTile(
+                      title: item['title'] as String,
+                      subtitle: item['subtitle'] as String,
+                      imageUrl: '',
+                      type: item['type'] as SearchResultType,
+                      onTap: () => debugPrint('Buka: ${item['title']}'),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+}
