@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_3/widgets/profile_avatar.dart';
 
 class HomeTopBar extends StatelessWidget{
   final List categories;
@@ -13,21 +14,7 @@ class HomeTopBar extends StatelessWidget{
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: const BoxDecoration(
-            color: Colors.blue,
-            shape: BoxShape.circle,
-          ),
-          child: const Text(
-            'W',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w900,
-              color: Colors.black,
-            ),
-          ),
-        ),
+        const ProfileAvatar(),
         
         const SizedBox(width: 12),
 
