@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../dev/models.dart';
 import '../pages/now_playing_page.dart';
 import '../player_provider.dart';
 import 'mini_player.dart';
 
 class PlayerMiniBar extends StatefulWidget {
-  final bool isFavorite;
-  final VoidCallback? onFavoriteToggle;
+  final bool Function(Song song)? isFavorite;
+  final ValueChanged<Song>? onFavoriteToggle;
 
-  const PlayerMiniBar({
-    super.key,
-    this.isFavorite = false,
-    this.onFavoriteToggle,
-  });
+  const PlayerMiniBar({super.key, this.isFavorite, this.onFavoriteToggle});
 
   @override
   State<PlayerMiniBar> createState() => _PlayerMiniBarState();
@@ -85,8 +82,11 @@ class _PlayerMiniBarState extends State<PlayerMiniBar> {
           progress: progress,
           onTap: _openNowPlaying,
           onPlayPause: provider.togglePlay,
-          isFavorite: widget.isFavorite,
-          onFavoriteToggle: widget.onFavoriteToggle,
+          isFavorite: widget.isFavorite?.call(song) ?? false,
+          onFavoriteToggle: widget.onFavoriteToggle != null
+              ? () => widget.onFavoriteToggle!(song)
+              : null,
+          errorMessage: provider.error,
         );
       },
     );
