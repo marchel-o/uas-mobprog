@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_3/search/genre_card.dart';
+import 'package:flutter_application_3/search/search_page.dart';
 
 void main() {
   runApp(const SearchDevApp());
@@ -16,17 +16,7 @@ class SearchDevApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF121212),
         colorScheme: const ColorScheme.dark(primary: Color(0xFF1DB954)),
       ),
-      home: const Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: SizedBox(
-              width: 180,
-              height: 100,
-              child: GenreCard(title: 'Pop', color: Colors.pink),
-            ),
-          ),
-        ),
-      ),
+      home: const SearchPage(),
     );
   }
 }
