@@ -4,6 +4,7 @@ import '../player_provider.dart';
 import '../player_theme.dart';
 import '../widgets/player_mini_bar.dart';
 import 'dummy_songs.dart';
+import 'models.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,13 @@ class _DevHome extends StatefulWidget {
 }
 
 class _DevHomeState extends State<_DevHome> {
-  bool _isFavorite = false;
+  final Set<String> _favorites = {};
+
+  void _toggleFavorite(Song song) {
+    setState(() {
+      if (!_favorites.add(song.id)) _favorites.remove(song.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +88,8 @@ class _DevHomeState extends State<_DevHome> {
         mainAxisSize: MainAxisSize.min,
         children: [
           PlayerMiniBar(
-            isFavorite: _isFavorite,
-            onFavoriteToggle: () => setState(() => _isFavorite = !_isFavorite),
+            isFavorite: (song) => _favorites.contains(song.id),
+            onFavoriteToggle: _toggleFavorite,
           ),
           const SizedBox(height: 4),
           BottomNavigationBar(

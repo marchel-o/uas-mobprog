@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../dev/models.dart';
 import '../player_provider.dart';
 import '../player_theme.dart';
 import '../widgets/album_art_display.dart';
@@ -9,14 +10,10 @@ import '../widgets/shuffle_repeat_buttons.dart';
 import '../widgets/song_info_header.dart';
 
 class NowPlayingPage extends StatelessWidget {
-  final bool isFavorite;
-  final VoidCallback? onFavoriteToggle;
+  final bool Function(Song song)? isFavorite;
+  final ValueChanged<Song>? onFavoriteToggle;
 
-  const NowPlayingPage({
-    super.key,
-    this.isFavorite = false,
-    this.onFavoriteToggle,
-  });
+  const NowPlayingPage({super.key, this.isFavorite, this.onFavoriteToggle});
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +68,9 @@ class NowPlayingPage extends StatelessWidget {
                             SongInfoHeader(
                               title: song.title,
                               artistName: song.artistName,
-                              isFavorite: isFavorite,
-                              onFavoriteToggle: onFavoriteToggle ?? () {},
+                              isFavorite: isFavorite?.call(song) ?? false,
+                              onFavoriteToggle: () =>
+                                  onFavoriteToggle?.call(song),
                             ),
                             if (provider.error != null)
                               _ErrorBanner(message: provider.error!),

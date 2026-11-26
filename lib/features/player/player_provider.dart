@@ -111,7 +111,7 @@ class PlayerProvider extends ChangeNotifier {
     if (_processing == ProcessingState.completed) {
       await seek(Duration.zero);
     }
-    unawaited(_audio.play());
+    unawaited(_play(_token));
   }
 
   Future<void> next() async {
@@ -210,7 +210,7 @@ class PlayerProvider extends ChangeNotifier {
   Future<void> _onCompleted() async {
     if (_repeatMode == PlayerRepeatMode.one) {
       await seek(Duration.zero);
-      unawaited(_audio.play());
+      unawaited(_play(_token));
       return;
     }
     if (hasNext) {
@@ -236,7 +236,7 @@ class PlayerProvider extends ChangeNotifier {
       await _audio.stop();
       await _prepare(song, token);
       if (token != _token) return;
-      unawaited(_audio.play());
+      unawaited(_play(token));
     } on PlayerInterruptedException {
       return;
     } on DeezerTrackException catch (e) {
@@ -270,6 +270,20 @@ class PlayerProvider extends ChangeNotifier {
     final url = await _deezer.fetchPreviewUrl(song.id);
     if (token != _token) return;
     await _audio.load(url);
+  }
+
+  Future<void> _play(int token) async {
+    try {
+      await _audio.play();
+    } on PlayerException {
+      if (token != _token) return;
+      _error = 'Lagu tidak dapat diputar';
+      notifyListeners();
+    } on Exception {
+      if (token != _token) return;
+      _error = 'Gagal memutar lagu';
+      notifyListeners();
+    }
   }
 
   @override

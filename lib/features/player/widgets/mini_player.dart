@@ -12,6 +12,7 @@ class MiniPlayer extends StatelessWidget {
   final VoidCallback onPlayPause;
   final bool isFavorite;
   final VoidCallback? onFavoriteToggle;
+  final String? errorMessage;
 
   const MiniPlayer({
     super.key,
@@ -23,6 +24,7 @@ class MiniPlayer extends StatelessWidget {
     required this.onPlayPause,
     this.isFavorite = false,
     this.onFavoriteToggle,
+    this.errorMessage,
   });
 
   @override
@@ -61,16 +63,41 @@ class MiniPlayer extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              Text(
-                                song.artistName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontFamily: PlayerTheme.fontFamily,
-                                  color: PlayerTheme.textSecondary,
-                                  fontSize: 12,
+                              if (errorMessage != null &&
+                                  errorMessage!.isNotEmpty)
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.error_outline,
+                                      size: 12,
+                                      color: PlayerTheme.textSecondary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        errorMessage!,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontFamily: PlayerTheme.fontFamily,
+                                          color: PlayerTheme.textSecondary,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              else
+                                Text(
+                                  song.artistName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontFamily: PlayerTheme.fontFamily,
+                                    color: PlayerTheme.textSecondary,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
                         ),
