@@ -39,11 +39,9 @@ class HomeScreen extends StatelessWidget{
     ];
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
       children: [
         HomeTopBar(categories: categories),
-
-        const SizedBox(height: 16),
 
         HomeRecentPlaylist(recentPlaylists: recentPlaylists),
 
@@ -72,8 +70,6 @@ class HomeScreen extends StatelessWidget{
             color: Colors.white,
           ),
         ),
-
-        const SizedBox(height: 14),
 
         HomeMostReplayed(mostReplayed: mostReplayed),
       ],

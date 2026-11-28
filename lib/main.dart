@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_3/home/screen.dart';
+import 'package:flutter_application_3/library/library_page.dart';
+import 'package:flutter_application_3/search/search_page.dart';
+// import 'library/library_page.dart';
 
 void main() {
   runApp(const SpotifyCloneApp());
@@ -24,14 +27,45 @@ class SpotifyCloneApp extends StatelessWidget {
   }
 }
 
-class CurrentScreen extends StatelessWidget {
+class CurrentScreen extends StatefulWidget {
   const CurrentScreen({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _CurrentScreenState();
+}
+
+class _CurrentScreenState extends State<CurrentScreen> {
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    const Center(child: HomeScreen()),
+    const Center(child: SearchPage()),
+    const Center(child: LibraryPage()),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: HomeScreen()
+      body: _pages[_selectedIndex],
+
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) => setState(() => _selectedIndex = index),
+          backgroundColor: Colors.black,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.green,
+          unselectedItemColor: Colors.grey,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+            BottomNavigationBarItem(icon: Icon(Icons.library_music), label: 'Library'),
+          ],
+        ),
       ),
     );
   }
