@@ -141,6 +141,113 @@ void main() {
       expect(find.text('0:50'), findsOneWidget);
       expect(find.text('-0:50'), findsOneWidget);
     });
+
+    testWidgets('mereset posisi drag saat durasi menjadi nol', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          PlayerProgressBar(
+            position: Duration.zero,
+            duration: const Duration(seconds: 100),
+            onSeek: (_) {},
+          ),
+        ),
+      );
+
+      tester.widget<Slider>(find.byType(Slider)).onChanged!(50000);
+      await tester.pump();
+      expect(find.text('0:50'), findsOneWidget);
+
+      await tester.pumpWidget(
+        wrap(
+          PlayerProgressBar(
+            position: Duration.zero,
+            duration: Duration.zero,
+            onSeek: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('0:50'), findsNothing);
+      expect(find.text('0:00'), findsOneWidget);
+      expect(find.text('-0:00'), findsOneWidget);
+
+      await tester.pumpWidget(
+        wrap(
+          PlayerProgressBar(
+            position: const Duration(seconds: 5),
+            duration: const Duration(seconds: 100),
+            onSeek: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('0:05'), findsOneWidget);
+      expect(find.text('-1:35'), findsOneWidget);
+      expect(tester.widget<Slider>(find.byType(Slider)).value, 5000);
+    });
+
+    testWidgets('mereset posisi drag saat durasi berganti ke lagu baru', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          PlayerProgressBar(
+            position: Duration.zero,
+            duration: const Duration(seconds: 100),
+            onSeek: (_) {},
+          ),
+        ),
+      );
+
+      tester.widget<Slider>(find.byType(Slider)).onChanged!(80000);
+      await tester.pump();
+      expect(find.text('1:20'), findsOneWidget);
+
+      await tester.pumpWidget(
+        wrap(
+          PlayerProgressBar(
+            position: const Duration(seconds: 3),
+            duration: const Duration(seconds: 30),
+            onSeek: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('1:20'), findsNothing);
+      expect(find.text('0:03'), findsOneWidget);
+      expect(find.text('-0:27'), findsOneWidget);
+      expect(tester.widget<Slider>(find.byType(Slider)).value, 3000);
+    });
+
+    testWidgets('mempertahankan posisi drag saat durasi tidak berubah', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          PlayerProgressBar(
+            position: Duration.zero,
+            duration: const Duration(seconds: 100),
+            onSeek: (_) {},
+          ),
+        ),
+      );
+
+      tester.widget<Slider>(find.byType(Slider)).onChanged!(50000);
+      await tester.pump();
+
+      await tester.pumpWidget(
+        wrap(
+          PlayerProgressBar(
+            position: const Duration(seconds: 2),
+            duration: const Duration(seconds: 100),
+            onSeek: (_) {},
+          ),
+        ),
+      );
+
+      expect(find.text('0:50'), findsOneWidget);
+      expect(find.text('-0:50'), findsOneWidget);
+    });
   });
 
   group('PlayPauseButton', () {

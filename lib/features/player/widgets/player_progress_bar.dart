@@ -22,6 +22,14 @@ class _PlayerProgressBarState extends State<PlayerProgressBar> {
   double? _dragMs;
 
   @override
+  void didUpdateWidget(covariant PlayerProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_dragMs != null && widget.duration != oldWidget.duration) {
+      _dragMs = null;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final totalMs = widget.duration.inMilliseconds;
     final enabled = totalMs > 0;
