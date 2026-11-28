@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_3/home/screen.dart';
+import 'package:flutter_application_3/pages/login_page.dart';
+import 'package:flutter_application_3/pages/main_screen.dart';
+import 'package:flutter_application_3/services/auth_service.dart';
 
 void main() {
   runApp(const SpotifyCloneApp());
@@ -19,7 +22,26 @@ class SpotifyCloneApp extends StatelessWidget {
           primary: Color(0xFF1DB954),
         ),
       ),
-      home: const CurrentScreen(),
+      home: const _Gate(),
+    );
+  }
+}
+
+class _Gate extends StatelessWidget {
+  const _Gate();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: AuthService().isLoggedIn(),
+      builder: (context, snap) {
+        if (snap.connectionState != ConnectionState.done) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return snap.data == true ? const MainScreen() : const LoginPage();
+      },
     );
   }
 }
